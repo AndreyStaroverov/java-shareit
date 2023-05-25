@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
+/**
+ *  Это класс заготовка под следующие спринты,
+ *  в данном спринте нам не нужно реализовывать booking & request
+ **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,6 +21,7 @@ import java.time.LocalDateTime;
 public class Booking {
 
     @NotNull
+    @Positive
     private Long id;
     @NotNull
     private LocalDateTime start;
@@ -25,7 +30,7 @@ public class Booking {
     @NotNull
     private Item item;
     @NotNull
-    private User booker;
+    private Long booker;
     @NotNull
-    private Enum status;
+    private StatusOfBooking status;
 }

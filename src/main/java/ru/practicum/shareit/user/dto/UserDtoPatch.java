@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,6 +14,7 @@ import javax.validation.constraints.Email;
 @Builder
 public class UserDtoPatch {
 
+    @Positive
     private Long id;
     private String name;
     @Email

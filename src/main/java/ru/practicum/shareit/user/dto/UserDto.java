@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class UserDto {
 
+    @Positive
     private Long id;
     @NotNull
     private String name;

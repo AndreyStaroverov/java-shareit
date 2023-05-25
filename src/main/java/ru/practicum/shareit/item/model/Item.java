@@ -6,20 +6,15 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
 
-    public Item(Long id, String name, String description, Boolean available) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
-
     @NotNull
+    @Positive
     private Long id;
     @NotNull
     private String name;
@@ -27,9 +22,7 @@ public class Item {
     private String description;
     @NotNull
     private Boolean available;
-    @NotNull
     private Long owner;
-    @NotNull
     private ItemRequest request;
 
     public Item(String name, String description, Boolean available) {

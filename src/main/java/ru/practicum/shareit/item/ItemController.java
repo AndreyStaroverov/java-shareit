@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDtoPatch;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
 
 @RestController
@@ -23,13 +24,13 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public Collection<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") @Positive Long userId) {
         return itemService.getItems(userId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItem(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+    public ItemDto addItem(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
                            @RequestBody @Valid ItemDto item) {
         if (userId == null) {
             throw new NotOwnerException("Отсутствует владелец");
@@ -39,14 +40,14 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public void deleteItem(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
                            @PathVariable Long itemId) {
         itemService.deleteItem(userId, itemId);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
                               @RequestBody ItemDtoPatch itemDtoPatch,
                               @PathVariable Long id) {
         return itemService.itemUpdate(itemDtoPatch, id, userId);

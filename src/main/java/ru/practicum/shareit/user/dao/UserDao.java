@@ -18,7 +18,7 @@ public class UserDao {
         return users.values();
     }
 
-    public void deleteUser(Long id) throws IllegalArgumentException {
+    public void deleteUser(Long id) {
         if (users.containsKey(id)) {
             users.remove(id);
         } else {

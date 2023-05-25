@@ -9,7 +9,10 @@ import ru.practicum.shareit.user.User;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-
+/**
+ *  Это класс заготовка под следующие спринты,
+ *  в данном спринте нам не нужно реализовывать booking & request
+ **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
