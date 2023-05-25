@@ -5,21 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItemDto {
+public class ItemDtoPatch {
 
     private Long id;
-    @NotBlank
     private String name;
-    @NotBlank
     private String description;
-    @NotNull
     private Boolean available;
 
 }
