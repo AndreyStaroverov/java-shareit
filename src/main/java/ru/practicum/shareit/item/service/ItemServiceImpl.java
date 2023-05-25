@@ -9,7 +9,6 @@ import ru.practicum.shareit.exceptions.NotOwnerException;
 import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoPatch;
-import ru.practicum.shareit.item.mapper.DtoToItem;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dao.UserDao;
@@ -41,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
         } catch (EntityNotExistException e) {
             throw new NotFoundException("Такого пользователя не существует");
         }
-        Item item = DtoToItem.toItem(itemDto);
+        Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userId);
         return ItemMapper.toItemDto(itemDao.createItem(item));
     }
