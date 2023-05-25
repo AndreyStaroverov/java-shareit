@@ -74,11 +74,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getItemById(Long id) {
-        try {
-            return ItemMapper.toItemDto(itemDao.getItemById(id));
-        } catch (IllegalArgumentException e) {
-            throw new EntityNotExistException(String.format("Item with id: %d , не существует", id));
-        }
+        return ItemMapper.toItemDto(itemDao.getItemById(id));
     }
 
     @Override
