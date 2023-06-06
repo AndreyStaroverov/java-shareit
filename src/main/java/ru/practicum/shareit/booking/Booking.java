@@ -10,10 +10,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
-/**
- *  Это класс заготовка под следующие спринты,
- *  в данном спринте нам не нужно реализовывать booking & request
- **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -55,7 +55,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getItemById(@PathVariable Long id) {
+    public ItemDto getItemById(@PathVariable @Positive Long id) {
         return itemService.getItemById(id);
     }
 

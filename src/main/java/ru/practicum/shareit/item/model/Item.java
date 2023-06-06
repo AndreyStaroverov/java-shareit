@@ -4,26 +4,38 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "items", schema = "public")
 public class Item {
 
-    @NotNull
     @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+
+    @Column(name = "name", nullable = false)
     private String name;
-    @NotNull
+
+    @Column(name = "description", nullable = false)
     private String description;
-    @NotNull
+
+    @Column(name = "is_available", nullable = false)
     private Boolean available;
-    private Long owner;
-    private ItemRequest request;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+//    @ManyToMany
+//    @JoinColumn(name = "id")
+//    private ItemRequest request;
 
     public Item(String name, String description, Boolean available) {
         this.name = name;
