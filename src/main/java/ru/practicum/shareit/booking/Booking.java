@@ -5,28 +5,38 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import javax.validation.constraints.Positive;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
+@Table(name = "bookings", schema = "public")
 public class Booking {
 
-    @NotNull
     @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private LocalDateTime start;
-    @NotNull
-    private LocalDateTime end;
-    @NotNull
+    @Column(name = "start_date", nullable = false)
+    private Timestamp start;
+    @Column(name = "end_date", nullable = false)
+    private Timestamp end;
+    @ManyToOne
+    @JoinColumn(name = "item_id")
     private Item item;
-    @NotNull
-    private Long booker;
-    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "booker_id")
+    private User booker;
+    @Enumerated(EnumType.STRING)
     private StatusOfBooking status;
+
+    public Booking(Long id, LocalDateTime start, LocalDateTime end, StatusOfBooking status) {
+    }
 }

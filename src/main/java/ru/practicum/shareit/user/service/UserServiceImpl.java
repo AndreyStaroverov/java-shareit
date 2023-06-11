@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.AlreadyExistEmailException;
@@ -17,7 +16,6 @@ import ru.practicum.shareit.user.mapper.DtoToUserMapper;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 import javax.persistence.EntityNotFoundException;
-import java.sql.SQLException;
 import java.util.Collection;
 
 @Service
@@ -31,7 +29,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         try {
             return UserMapper.toUserDto(userRepository.save(DtoToUserMapper.toUser(userDto)));
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new AlreadyExistEmailException("Email is used");
         }
     }

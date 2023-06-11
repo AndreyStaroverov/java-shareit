@@ -2,12 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.*;
 
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Column;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -18,7 +13,9 @@ import javax.validation.constraints.Positive;
 @Builder
 @Entity
 @Table(name = "users", schema = "public")
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 public class User {
 
     @Positive

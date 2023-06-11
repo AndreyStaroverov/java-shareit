@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.NotOwnerException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoPatch;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -24,7 +24,7 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") @Positive Long userId) {
+    public Collection<ItemDtoGetItems> getItems(@RequestHeader("X-Sharer-User-Id") @Positive Long userId) {
         return itemService.getItems(userId);
     }
 
@@ -55,14 +55,26 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getItemById(@PathVariable @Positive Long id) {
-        return itemService.getItemById(id);
+    public ItemDtoById getItemById(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+                                   @PathVariable @Positive Long id) {
+        return itemService.getItemById(id, userId);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Collection<ItemDto> getSearchItems(@RequestParam(name = "text", required = false) String text) {
         return itemService.getSearchItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.OK)
+    public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
+                                 @RequestBody @Valid Comment comment,
+                                 @PathVariable Long itemId) {
+        if (userId == null) {
+            throw new NotOwnerException("Отсутствует user");
+        }
+        return itemService.addComment(userId, comment, itemId);
     }
 
 }
