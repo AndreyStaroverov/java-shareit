@@ -86,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
             Booking booking = bookingRepository.getById(id);
             if (!booking.getStatus().equals(StatusOfBooking.APPROVED)) {
                 if (userRepository.existsById(userId)) {
-                    if (booking.getItem().getOwner().getId() == userId) {
+                    if (booking.getItem().getOwner().getId().equals(userId)) {
                         if (approved) {
                             booking.setStatus(StatusOfBooking.APPROVED);
                         } else {
@@ -112,7 +112,7 @@ public class BookingServiceImpl implements BookingService {
         if (bookingRepository.existsById(id)) {
             Booking booking = bookingRepository.getById(id);
             if (userRepository.existsById(userId)) {
-                if (booking.getItem().getOwner().getId() == userId || booking.getBooker().getId() == userId) {
+                if (booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId)) {
                     return BookingToDto.toBookingDtoCreate(bookingRepository.getById(id));
                 } else {
                     throw new NotFoundException("No rules for booking");
