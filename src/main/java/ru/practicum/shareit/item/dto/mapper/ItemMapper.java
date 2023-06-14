@@ -63,4 +63,17 @@ public class ItemMapper {
         return itemsDto;
     }
 
+    public static Collection<ItemDtoById> toItemDtoCollectionItems(Collection<Item> items) {
+        Collection<ItemDtoById> itemsDto = new ArrayList<>();
+        for (Item i : items) {
+            itemsDto.add(new ItemDtoById(
+                    i.getId(),
+                    i.getName(),
+                    i.getDescription(),
+                    i.getAvailable()
+            ));
+        }
+        return itemsDto;
+    }
+
 }

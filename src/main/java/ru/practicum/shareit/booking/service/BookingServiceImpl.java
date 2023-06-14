@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.SortBookings;
 import ru.practicum.shareit.booking.StatusOfBooking;
@@ -33,6 +35,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public BookingDtoCreate createBooking(Long userId, BookingDto booking) {
         check(userId, booking);
         Booking books = new Booking();
@@ -81,51 +84,39 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public BookingDtoCreate updateBooking(Long userId, Long id, Boolean approved) {
-        if (bookingRepository.existsById(id)) {
-            Booking booking = bookingRepository.getById(id);
-            if (!booking.getStatus().equals(StatusOfBooking.APPROVED)) {
-                if (userRepository.existsById(userId)) {
-                    if (booking.getItem().getOwner().getId().equals(userId)) {
-                        if (approved) {
-                            booking.setStatus(StatusOfBooking.APPROVED);
-                        } else {
-                            booking.setStatus(StatusOfBooking.REJECTED);
-                        }
-                        return BookingToDto.toBookingDtoCreate(bookingRepository.save(booking));
-                    } else {
-                        throw new NotFoundException("No rules for booking");
-                    }
-                } else {
-                    throw new NotFoundException("User Not Found");
-                }
-            } else {
-                throw new BadRequestException("Booking already APPROVED");
-            }
-        } else {
-            throw new NotFoundException("Not Found Booking");
+        checkUserIdAndBookingId(userId, id);
+        Booking booking = bookingRepository.getById(id);
+
+        if (booking.getStatus().equals(StatusOfBooking.APPROVED)) {
+            throw new BadRequestException("Booking already APPROVED");
         }
+        if (!booking.getItem().getOwner().getId().equals(userId)) {
+            throw new NotFoundException("No rules for booking");
+        }
+        if (approved) {
+            booking.setStatus(StatusOfBooking.APPROVED);
+        } else {
+            booking.setStatus(StatusOfBooking.REJECTED);
+        }
+        return BookingToDto.toBookingDtoCreate(bookingRepository.save(booking));
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public BookingDtoCreate getBookingById(Long userId, Long id) {
-        if (bookingRepository.existsById(id)) {
-            Booking booking = bookingRepository.getById(id);
-            if (userRepository.existsById(userId)) {
-                if (booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId)) {
-                    return BookingToDto.toBookingDtoCreate(bookingRepository.getById(id));
-                } else {
-                    throw new NotFoundException("No rules for booking");
-                }
-            } else {
-                throw new NotFoundException("User Not Found");
-            }
+        checkUserIdAndBookingId(userId, id);
+        Booking booking = bookingRepository.getById(id);
+        if (booking.getItem().getOwner().getId().equals(userId) || booking.getBooker().getId().equals(userId)) {
+            return BookingToDto.toBookingDtoCreate(bookingRepository.getById(id));
         } else {
-            throw new NotFoundException("Not Found Booking");
+            throw new NotFoundException("No rules for booking");
         }
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Collection<BookingDtoCreate> getBookingsByState(Long userId, String state) {
         if (userRepository.existsById(userId)) {
             switch (state) {
@@ -167,6 +158,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public Collection<BookingDtoCreate> getBookingsItemsByOwner(Long userId, String state) {
         if (userRepository.existsById(userId)) {
             switch (state) {
@@ -202,6 +194,15 @@ public class BookingServiceImpl implements BookingService {
             }
         } else {
             throw new NotFoundException("UserNotFound");
+        }
+    }
+
+    private void checkUserIdAndBookingId(Long userId, Long bookingId) {
+        if (!bookingRepository.existsById(bookingId)) {
+            throw new NotFoundException("Not Found Booking");
+        }
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User Not Found");
         }
     }
 }

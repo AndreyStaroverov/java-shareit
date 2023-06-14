@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.AlreadyExistEmailException;
 import ru.practicum.shareit.exceptions.NotFoundException;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserDto createUser(UserDto userDto) {
         try {
             return UserMapper.toUserDto(userRepository.save(DtoToUserMapper.toUser(userDto)));
@@ -35,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public UserDto userUpdate(UserDtoPatch userDtoPatch, Long id) {
         User user = userRepository.getById(id);
         if (userDtoPatch.getId() != null) {
@@ -60,6 +63,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public UserDto getUserById(Long id) {
         try {
             return UserMapper.toUserDto(userRepository.getById(id));
@@ -69,12 +73,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public Collection<User> getUsers() {
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteUser(Long id) {
         try {
             userRepository.deleteById(id);
