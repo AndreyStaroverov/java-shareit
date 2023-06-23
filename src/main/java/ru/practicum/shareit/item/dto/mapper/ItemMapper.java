@@ -19,6 +19,30 @@ public class ItemMapper {
         );
     }
 
+    public static ItemDto toItemDtoRequest(Item item) {
+        return new ItemDto(
+                item.getId(),
+                item.getName(),
+                item.getDescription(),
+                item.getAvailable(),
+                item.getRequestor().getId()
+        );
+    }
+
+    public static Collection<ItemDto> toItemDtoCollectionRequests(Collection<Item> items) {
+        Collection<ItemDto> itemsDto = new ArrayList<>();
+        for (Item i : items) {
+            itemsDto.add(new ItemDto(
+                    i.getId(),
+                    i.getName(),
+                    i.getDescription(),
+                    i.getAvailable(),
+                    i.getRequestor().getId()
+            ));
+        }
+        return itemsDto;
+    }
+
     public static ItemDto toItemDto(Item item) {
         return new ItemDto(
                 item.getId(),

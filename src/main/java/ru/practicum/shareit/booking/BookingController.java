@@ -2,17 +2,20 @@ package ru.practicum.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "/bookings")
+@Validated
 public class BookingController {
 
     private final BookingService bookingService;
@@ -47,15 +50,23 @@ public class BookingController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookingDtoCreate> getBookingsOwner(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
-                                                         @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.getBookingsByState(userId, state);
+                                                         @RequestParam(defaultValue = "ALL") String state,
+                                                         @RequestParam(value = "from", required = false)
+                                                             @Min(1) Long from,
+                                                         @RequestParam(value = "size", required = false)
+                                                             @Min(1) Long size) {
+        return bookingService.getBookingsByState(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
     public Collection<BookingDtoCreate> getBookingsItemsOwner(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
-                                                              @RequestParam(defaultValue = "ALL") String state) {
-        return bookingService.getBookingsItemsByOwner(userId, state);
+                                                              @RequestParam(defaultValue = "ALL") String state,
+                                                              @RequestParam(value = "from", required = false)
+                                                                  @Min(1) Long from,
+                                                              @RequestParam(value = "size", required = false)
+                                                                  @Min(1) Long size) {
+        return bookingService.getBookingsItemsByOwner(userId, state, from, size);
     }
 
 }
