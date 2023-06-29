@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto.mapper;
 
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoById;
-import ru.practicum.shareit.item.dto.ItemDtoGetItems;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.ArrayList;
@@ -65,19 +64,6 @@ public class ItemMapper {
         Collection<ItemDto> itemsDto = new ArrayList<>();
         for (Item i : items) {
             itemsDto.add(new ItemDto(
-                    i.getId(),
-                    i.getName(),
-                    i.getDescription(),
-                    i.getAvailable()
-            ));
-        }
-        return itemsDto;
-    }
-
-    public static Collection<ItemDtoGetItems> toItemDtoCollectionGetItems(Collection<Item> items) {
-        Collection<ItemDtoGetItems> itemsDto = new ArrayList<>();
-        for (Item i : items) {
-            itemsDto.add(new ItemDtoGetItems(
                     i.getId(),
                     i.getName(),
                     i.getDescription(),

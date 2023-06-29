@@ -31,7 +31,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query(value = "select * from bookings b WHERE b.booker_id = ?1 AND b.status = ?2", nativeQuery = true)
     List<Booking> findByBooker_IdAndStatusContainingIgnoreCase(Long bookerId, String status); // WAITING & REJ
 
-    Page<Booking> findByBookerAndStatusContainingIgnoreCase(Long bookerId, String status, Pageable page);
+    Page<Booking> findByBookerAndStatusContaining(Long bookerId, String status, Pageable page);
 
     @Query(value = "select b.id, b.start_date, b.end_date, b.item_id, b.booker_id, b.status " +
             "from bookings b " +

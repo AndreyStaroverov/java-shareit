@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.SortBookings;
 import ru.practicum.shareit.booking.StatusOfBooking;
 import ru.practicum.shareit.booking.dao.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -57,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void check(Long userId, BookingDto booking) {
+    public void check(Long userId, BookingDto booking) {
         if (booking.getStart() == null || booking.getStart().equals(booking.getEnd())) {
             throw new BadRequestException("Start is null or equal End");
         }
@@ -162,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
                     }
                     List<Booking> bookingsWait = new ArrayList<>(
                             bookingRepository.findByBooker_IdAndStatusContainingIgnoreCase(
-                                    userId, SortBookings.WAITING.toString()));
+                                    userId, StatusOfBooking.WAITING.toString()));
                     return BookingToDto.toBookingDtoCreateCollection(bookingsWait);
                 case "REJECTED":
                     if (from != null && size != null) {
@@ -170,7 +169,7 @@ public class BookingServiceImpl implements BookingService {
                     }
                     List<Booking> bookingsRej = new ArrayList<>(
                             bookingRepository.findByBooker_IdAndStatusContainingIgnoreCase(
-                                    userId, SortBookings.REJECTED.toString()));
+                                    userId, StatusOfBooking.REJECTED.toString()));
                     return BookingToDto.toBookingDtoCreateCollection(bookingsRej);
                 default:
                     throw new InvalidDataException("Unknown state: " + state);
@@ -180,7 +179,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private Collection<BookingDtoCreate> pageCurrentBookings(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageCurrentBookings(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -191,7 +190,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageAllBookings(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageAllBookings(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -200,7 +199,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pagePastBookings(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pagePastBookings(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -210,7 +209,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageFutureBookings(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageFutureBookings(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -220,22 +219,22 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageWaitingBookings(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageWaitingBookings(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
-        Page<Booking> bookingsPage = bookingRepository.findByBookerAndStatusContainingIgnoreCase(
-                userId, SortBookings.REJECTED.toString(), page);
+        Page<Booking> bookingsPage = bookingRepository.findByBookerAndStatusContaining(
+                userId, StatusOfBooking.WAITING.toString(), page);
         return new ArrayList<>(BookingToDto.toBookingDtoCreateCollection(bookingsPage.get()
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageRejectedBookings(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageRejectedBookings(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
-        Page<Booking> bookingsPage = bookingRepository.findByBookerAndStatusContainingIgnoreCase(
-                userId, SortBookings.WAITING.toString(), page);
+        Page<Booking> bookingsPage = bookingRepository.findByBookerAndStatusContaining(
+                userId, StatusOfBooking.REJECTED.toString(), page);
         return new ArrayList<>(BookingToDto.toBookingDtoCreateCollection(bookingsPage.get()
                 .collect(Collectors.toList())));
     }
@@ -280,7 +279,7 @@ public class BookingServiceImpl implements BookingService {
                         return pageWaitingBookingsOwner(userId, state, from, size);
                     }
                     List<Booking> bookingsWait = new ArrayList<>(
-                            bookingRepository.getBookingItemsByOwner_IdStatus(userId, SortBookings.WAITING.toString())
+                            bookingRepository.getBookingItemsByOwner_IdStatus(userId, StatusOfBooking.WAITING.toString())
                     );
                     return BookingToDto.toBookingDtoCreateCollection(bookingsWait);
                 case "REJECTED":
@@ -288,7 +287,7 @@ public class BookingServiceImpl implements BookingService {
                         return pageRejectedBookingsOwner(userId, state, from, size);
                     }
                     List<Booking> bookingsRej = new ArrayList<>(
-                            bookingRepository.getBookingItemsByOwner_IdStatus(userId, SortBookings.REJECTED.toString()));
+                            bookingRepository.getBookingItemsByOwner_IdStatus(userId, StatusOfBooking.REJECTED.toString()));
                     return BookingToDto.toBookingDtoCreateCollection(bookingsRej);
                 default:
                     throw new InvalidDataException("Unknown state: " + state);
@@ -298,7 +297,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private Collection<BookingDtoCreate> pageCurrentBookingsOwner(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageCurrentBookingsOwner(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -310,7 +309,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageAllBookingsOwner(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageAllBookingsOwner(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
         Page<Booking> bookingsPage = bookingRepository.getBookingItemsByOwner_Id(userId, page);
@@ -318,7 +317,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pagePastBookingsOwner(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pagePastBookingsOwner(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -328,7 +327,7 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageFutureBookingsOwner(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageFutureBookingsOwner(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
@@ -338,27 +337,27 @@ public class BookingServiceImpl implements BookingService {
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageWaitingBookingsOwner(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageWaitingBookingsOwner(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
         Page<Booking> bookingsPage = bookingRepository
-                .getBookingItemsByOwner_IdStatus(userId, SortBookings.WAITING.toString(), page);
+                .getBookingItemsByOwner_IdStatus(userId, StatusOfBooking.WAITING.toString(), page);
         return new ArrayList<>(BookingToDto.toBookingDtoCreateCollection(bookingsPage.get()
                 .collect(Collectors.toList())));
     }
 
-    private Collection<BookingDtoCreate> pageRejectedBookingsOwner(Long userId, String state, Long from, Long size) {
+    public Collection<BookingDtoCreate> pageRejectedBookingsOwner(Long userId, String state, Long from, Long size) {
         Sort sortByDate = Sort.by(Sort.Direction.DESC, "start");
         Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortByDate);
 
         Page<Booking> bookingsPage = bookingRepository
-                .getBookingItemsByOwner_IdStatus(userId, SortBookings.REJECTED.toString(), page);
+                .getBookingItemsByOwner_IdStatus(userId, StatusOfBooking.REJECTED.toString(), page);
         return new ArrayList<>(BookingToDto.toBookingDtoCreateCollection(bookingsPage.get()
                 .collect(Collectors.toList())));
     }
 
-    private void checkUserIdAndBookingId(Long userId, Long bookingId) {
+    public void checkUserIdAndBookingId(Long userId, Long bookingId) {
         if (!bookingRepository.existsById(bookingId)) {
             throw new NotFoundException("Not Found Booking");
         }

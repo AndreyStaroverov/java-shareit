@@ -57,8 +57,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Pageable page = PageRequest.of(from / size, size, sortById);
 
         Page<ItemRequest> requestsPage = requestRepository.findAllByRequestorNot(userRepository.getById(userId), page);
-        requestsPage.getContent().forEach(itemRequest -> {
-        });
         ArrayList<ItemRequestDto> itemRequestDtos = new ArrayList<>(ItemRequestMapper.toDtoCollection(requestsPage.get()
                 .collect(Collectors.toList())).stream().collect(Collectors.toList()));
         for (ItemRequestDto itemRequestDto : itemRequestDtos) {

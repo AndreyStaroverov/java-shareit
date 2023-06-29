@@ -31,6 +31,4 @@ public class ItemRequest {
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
-    public ItemRequest(Long id, String description, LocalDateTime created) {
-    }
 }

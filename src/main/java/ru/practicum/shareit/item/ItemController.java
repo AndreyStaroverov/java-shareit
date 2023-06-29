@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.NotOwnerException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoById;
@@ -40,9 +39,6 @@ public class ItemController {
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto addItem(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
                            @RequestBody @Valid ItemDto item) {
-        if (userId == null) {
-            throw new NotOwnerException("Отсутствует владелец");
-        }
         return itemService.addNewItem(userId, item);
     }
 
@@ -81,9 +77,6 @@ public class ItemController {
     public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
                                  @RequestBody @Valid Comment comment,
                                  @PathVariable Long itemId) {
-        if (userId == null) {
-            throw new NotOwnerException("Отсутствует user");
-        }
         return itemService.addComment(userId, comment, itemId);
     }
 

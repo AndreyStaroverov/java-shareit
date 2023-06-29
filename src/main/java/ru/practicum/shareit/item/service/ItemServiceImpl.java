@@ -6,7 +6,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,8 +63,7 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemDtoById> getItems(Long userId, Long from, Long size) {
         Collection<ItemDtoById> items = new ArrayList<>();
         if (from != null && size != null) {
-            Sort sortBydate = Sort.by(Sort.Direction.DESC, "start");
-            Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortBydate);
+            Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size));
             Page<Item> itemsPage = itemRepository.findAllByOwnerId(userId, page);
             items = new ArrayList<>(ItemMapper.toItemDtoCollectionItems((itemsPage.get()
                     .collect(Collectors.toList()))));
@@ -156,8 +154,7 @@ public class ItemServiceImpl implements ItemService {
             return new ArrayList<>();
         }
         if (from != null && size != null) {
-            Sort sortBydate = Sort.by(Sort.Direction.DESC, "start");
-            Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size), sortBydate);
+            Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size));
             Page<Item> itemsPage = itemRepository.getSearchItems(text, page);
             return new ArrayList<>(ItemMapper.toItemDtoCollection((itemsPage.get()
                     .collect(Collectors.toList()))));
@@ -183,7 +180,7 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
-    private ItemDtoById setLastAndNextBookings(ItemDtoById item) {
+    public ItemDtoById setLastAndNextBookings(ItemDtoById item) {
         List<Booking> bookingsPast = bookingRepository
                 .findByItemIdAndStatusAndStartIsBeforeOrderByEndDesc(item.getId(),
                         StatusOfBooking.APPROVED,

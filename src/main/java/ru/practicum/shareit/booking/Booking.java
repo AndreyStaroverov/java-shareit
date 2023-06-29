@@ -10,7 +10,6 @@ import ru.practicum.shareit.user.User;
 import javax.persistence.*;
 import javax.validation.constraints.Positive;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -37,6 +36,4 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private StatusOfBooking status;
 
-    public Booking(Long id, LocalDateTime start, LocalDateTime end, StatusOfBooking status) {
-    }
 }
