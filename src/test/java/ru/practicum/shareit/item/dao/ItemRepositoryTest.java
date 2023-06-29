@@ -103,7 +103,7 @@ class ItemRepositoryTest {
         Assertions.assertNotNull(item);
         Assertions.assertNotNull(item.getId());
 
-        Pageable page = PageRequest.of(100/400, 400);
+        Pageable page = PageRequest.of(100 / 400, 400);
         Page<Item> items = itemRepository.getSearchItems("desc", page);
 
         assertEquals(1, items.get().collect(Collectors.toList()).size());

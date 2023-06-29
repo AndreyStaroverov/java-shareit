@@ -27,11 +27,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class RequestRepositoryTest {
 
-    @Autowired private DataSource dataSource;
-    @Autowired private JdbcTemplate jdbcTemplate;
-    @Autowired private EntityManager entityManager;
-    @Autowired RequestRepository requestRepository;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private EntityManager entityManager;
+    @Autowired
+    RequestRepository requestRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @Test
     void injectedComponentsAreNotNull() {
@@ -66,7 +71,7 @@ class RequestRepositoryTest {
                 new ItemRequest(2L, "text2",
                         user, LocalDateTime.now()));
 
-        Pageable page = PageRequest.of(100/40, 400);
+        Pageable page = PageRequest.of(100 / 40, 400);
 
         Page<ItemRequest> itemRequestPage = requestRepository.findAllByRequestorNot(user2, page);
 
@@ -85,7 +90,7 @@ class RequestRepositoryTest {
                 new ItemRequest(2L, "text2",
                         user, LocalDateTime.now()));
 
-        Pageable page = PageRequest.of(100/40, 20);
+        Pageable page = PageRequest.of(100 / 40, 20);
 
         List<ItemRequest> itemRequestPage = requestRepository.findAllByRequestorIdOrderByCreatedDesc(2L);
 
