@@ -38,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    private final String SORT_BY_DATE = "start";
+    private static final String SORT_BY_DATE = "start";
 
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
