@@ -36,9 +36,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public ItemRequestDto add(ItemRequestDto itemRequestDto, Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User not found in base");
-        }
+        checkUserExist(userId);
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setDescription(itemRequestDto.getDescription());
         itemRequest.setCreated(LocalDateTime.now());
@@ -50,9 +48,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public List<ItemRequestDto> getFromSize(Long userId, int from, int size) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User not found in base");
-        }
+        checkUserExist(userId);
         Sort sortById = Sort.by(Sort.Direction.ASC, "created");
         Pageable page = PageRequest.of(from / size, size, sortById);
 
@@ -68,9 +64,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public ItemRequestDto getRequestById(Long userId, Long requestId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User not found in base");
-        }
+        checkUserExist(userId);
         if (!requestRepository.existsById(requestId)) {
             throw new NotFoundException("Request Not Found");
         }
@@ -82,14 +76,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
     public List<ItemRequestDto> getAllRequests(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User not found in base");
-        }
+        checkUserExist(userId);
         ArrayList<ItemRequestDto> itemRequestDtos = new ArrayList<>(ItemRequestMapper.toDtoCollection(requestRepository
                 .findAllByRequestorIdOrderByCreatedDesc(userId)));
         for (ItemRequestDto itemRequestDto : itemRequestDtos) {
             itemRequestDto.setItems(ItemMapper.toItemDtoCollectionRequests(itemRepository.findAllByRequestorId(userId)));
         }
         return itemRequestDtos;
+    }
+
+    public void checkUserExist(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User not found in base");
+        }
     }
 }
