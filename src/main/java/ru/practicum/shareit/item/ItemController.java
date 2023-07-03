@@ -2,8 +2,8 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.NotOwnerException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoById;
@@ -12,11 +12,13 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
 
 @RestController
 @RequestMapping("/items")
+@Validated
 public class ItemController {
 
     private final ItemService itemService;
@@ -27,17 +29,16 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDtoById> getItems(@RequestHeader("X-Sharer-User-Id") @Positive Long userId) {
-        return itemService.getItems(userId);
+    public Collection<ItemDtoById> getItems(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+                                            @RequestParam(value = "from", required = false) @Min(1) Long from,
+                                            @RequestParam(value = "size", required = false) @Min(1) Long size) {
+        return itemService.getItems(userId, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto addItem(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
                            @RequestBody @Valid ItemDto item) {
-        if (userId == null) {
-            throw new NotOwnerException("Отсутствует владелец");
-        }
         return itemService.addNewItem(userId, item);
     }
 
@@ -65,8 +66,10 @@ public class ItemController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDto> getSearchItems(@RequestParam(name = "text", required = false) String text) {
-        return itemService.getSearchItems(text);
+    public Collection<ItemDto> getSearchItems(@RequestParam(name = "text", required = false) String text,
+                                              @RequestParam(value = "from", required = false) @Min(1) Long from,
+                                              @RequestParam(value = "size", required = false) @Min(1) Long size) {
+        return itemService.getSearchItems(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
@@ -74,9 +77,6 @@ public class ItemController {
     public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
                                  @RequestBody @Valid Comment comment,
                                  @PathVariable Long itemId) {
-        if (userId == null) {
-            throw new NotOwnerException("Отсутствует user");
-        }
         return itemService.addComment(userId, comment, itemId);
     }
 

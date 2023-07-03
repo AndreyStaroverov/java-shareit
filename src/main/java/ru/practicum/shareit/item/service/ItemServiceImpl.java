@@ -3,6 +3,9 @@ package ru.practicum.shareit.item.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,7 @@ import ru.practicum.shareit.item.dto.mapper.CommentMapper;
 import ru.practicum.shareit.item.dto.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.dao.RequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dao.UserRepository;
 
@@ -43,20 +47,29 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final RequestRepository requestRepository;
 
     public ItemServiceImpl(@Autowired ItemRepository itemRepository, UserRepository userRepository,
-                           BookingRepository bookingRepository, CommentRepository commentRepository) {
+                           BookingRepository bookingRepository, CommentRepository commentRepository, RequestRepository requestRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.bookingRepository = bookingRepository;
         this.commentRepository = commentRepository;
+        this.requestRepository = requestRepository;
     }
 
     @Override
     @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public Collection<ItemDtoById> getItems(Long userId) {
+    public Collection<ItemDtoById> getItems(Long userId, Long from, Long size) {
         Collection<ItemDtoById> items = new ArrayList<>();
-        items = ItemMapper.toItemDtoCollectionItems(itemRepository.findAllByOwnerId(userId));
+        if (from != null && size != null) {
+            Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size));
+            Page<Item> itemsPage = itemRepository.findAllByOwnerId(userId, page);
+            items = new ArrayList<>(ItemMapper.toItemDtoCollectionItems((itemsPage.get()
+                    .collect(Collectors.toList()))));
+        } else {
+            items = ItemMapper.toItemDtoCollectionItems(itemRepository.findAllByOwnerId(userId));
+        }
         for (ItemDtoById item : items) {
             item = setLastAndNextBookings(item);
             item.setComments(CommentMapper.toCommentDtoCollection(commentRepository.findByItemId(item.getId())));
@@ -70,11 +83,15 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addNewItem(Long userId, ItemDto itemDto) {
         Item item = ItemMapper.toItem(itemDto);
         try {
-            if (userRepository.existsById(userId)) {
-                User user = userRepository.getById(userId);
-                item.setOwner(user);
-            } else {
+            if (!userRepository.existsById(userId)) {
                 throw new EntityNotFoundException("Not Found User");
+            }
+            User user = userRepository.getById(userId);
+            item.setOwner(user);
+
+            if (itemDto.getRequestId() != null) {
+                item.setRequestor(requestRepository.getById(itemDto.getRequestId()));
+                return ItemMapper.toItemDtoRequest(itemRepository.save(item));
             }
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("Такого пользователя не существует");
@@ -131,10 +148,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-    public Collection<ItemDto> getSearchItems(String text) {
+    public Collection<ItemDto> getSearchItems(String text, Long from, Long size) {
         if (text.isBlank()) {
             log.warn("Отсутствует категория поиска");
             return new ArrayList<>();
+        }
+        if (from != null && size != null) {
+            Pageable page = PageRequest.of(Math.toIntExact(from / size), Math.toIntExact(size));
+            Page<Item> itemsPage = itemRepository.getSearchItems(text, page);
+            return new ArrayList<>(ItemMapper.toItemDtoCollection((itemsPage.get()
+                    .collect(Collectors.toList()))));
         }
         return ItemMapper.toItemDtoCollection(itemRepository.getSearchItems(text));
     }
@@ -157,7 +180,7 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.toCommentDto(commentRepository.save(comment));
     }
 
-    private ItemDtoById setLastAndNextBookings(ItemDtoById item) {
+    public ItemDtoById setLastAndNextBookings(ItemDtoById item) {
         List<Booking> bookingsPast = bookingRepository
                 .findByItemIdAndStatusAndStartIsBeforeOrderByEndDesc(item.getId(),
                         StatusOfBooking.APPROVED,

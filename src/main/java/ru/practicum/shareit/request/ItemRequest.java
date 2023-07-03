@@ -7,26 +7,28 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
-/**
- * Это класс заготовка под следующие спринты,
- * в данном спринте нам не нужно реализовывать booking & request
- **/
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "requests", schema = "public")
 public class ItemRequest {
 
-    @NotNull
+    @Positive
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @Column(name = "description", nullable = false)
     private String description;
-    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "requestor_id", nullable = false)
     private User requestor;
-    @NotNull
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
 }

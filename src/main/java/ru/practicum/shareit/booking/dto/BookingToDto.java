@@ -20,14 +20,6 @@ public class BookingToDto {
         );
     }
 
-    public static Booking toBooking(BookingDto booking) {
-        return new Booking(
-                booking.getId(),
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getStatus()
-        );
-    }
 
     public static BookingDtoCreate toBookingDtoCreate(Booking booking) {
         return new BookingDtoCreate(
