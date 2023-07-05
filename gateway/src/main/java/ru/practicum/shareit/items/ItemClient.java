@@ -59,12 +59,7 @@ public class ItemClient extends BaseClient {
 
     public ResponseEntity<Object> getSearchItems(String text, Long from, Long size) {
         if (from != null && size != null) {
-            Map<String, Object> parameters = Map.of(
-                    "text", text,
-                    "from", from,
-                    "size", size
-            );
-            return get("/search?text={text}&from={from}&size={size}", parameters);
+            return get("/search?text="+ text + "&from="+ from + "&size=" + size);
         } else {
             return get("/search?text=" + text);
         }
