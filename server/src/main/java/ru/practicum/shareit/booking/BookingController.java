@@ -52,9 +52,9 @@ public class BookingController {
     public Collection<BookingDtoCreate> getBookingsOwner(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
                                                          @RequestParam(defaultValue = "ALL") String state,
                                                          @RequestParam(value = "from", required = false)
-                                                             @Min(1) Long from,
+                                                         @Min(1) Long from,
                                                          @RequestParam(value = "size", required = false)
-                                                             @Min(1) Long size) {
+                                                         @Min(1) Long size) {
         return bookingService.getBookingsByState(userId, state, from, size);
     }
 
@@ -63,9 +63,9 @@ public class BookingController {
     public Collection<BookingDtoCreate> getBookingsItemsOwner(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
                                                               @RequestParam(defaultValue = "ALL") String state,
                                                               @RequestParam(value = "from", required = false)
-                                                                  @Min(1) Long from,
+                                                              @Min(1) Long from,
                                                               @RequestParam(value = "size", required = false)
-                                                                  @Min(1) Long size) {
+                                                              @Min(1) Long size) {
         return bookingService.getBookingsItemsByOwner(userId, state, from, size);
     }
 
