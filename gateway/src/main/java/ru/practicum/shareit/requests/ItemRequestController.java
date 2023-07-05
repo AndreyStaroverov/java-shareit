@@ -26,7 +26,7 @@ public class ItemRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> createRequest(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
                                                 @RequestBody @Valid ItemRequestDto itemRequestDto) {
-        return itemRequestClient.add(userId,itemRequestDto);
+        return itemRequestClient.add(userId, itemRequestDto);
     }
 
     @GetMapping
@@ -38,14 +38,14 @@ public class ItemRequestController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> getRequests(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
-                                            @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
-                                            @RequestParam(value = "size", defaultValue = "10") @Min(0) int size) {
+                                              @RequestParam(value = "from", defaultValue = "0") @Min(0) int from,
+                                              @RequestParam(value = "size", defaultValue = "10") @Min(1) int size) {
         return itemRequestClient.getFromSize(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
-                                         @PathVariable(value = "requestId") @Positive Long requestId) {
+                                                 @PathVariable(value = "requestId") @Positive Long requestId) {
         return itemRequestClient.getRequestById(userId, requestId);
     }
 

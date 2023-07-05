@@ -31,7 +31,7 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> updateBooking(Long userId, Long id, Boolean approved) {
-        return patch("/" + id, userId, approved);
+        return patch("/" + id + "?approved=" + approved, userId.longValue());
     }
 
     public ResponseEntity<Object> getBooking(Long userId, Long bookingId) {
@@ -39,21 +39,35 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getBookings(Long userId, String state, Long from, Long size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state,
-                "from", from,
-                "size", size
-        );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
+        if (from != null && size != null && state != null) {
+            Map<String, Object> parameters = Map.of(
+                    "state", state,
+                    "from", from,
+                    "size", size
+            );
+            return get("?state={state}&from={from}&size={size}", userId, parameters);
+        }
+        if (state != null) {
+            return get("?state=" + state, userId);
+        } else {
+            return get("", userId);
+        }
     }
 
     public ResponseEntity<Object> getBookingsOwner(Long userId, String state, Long from, Long size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state,
-                "from", from,
-                "size", size
-        );
-        return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
+        if (from != null && size != null && state != null) {
+            Map<String, Object> parameters = Map.of(
+                    "state", state,
+                    "from", from,
+                    "size", size
+            );
+            return get("/owner?state={state}&from={from}&size={size}", userId, parameters);
+        }
+        if (state != null) {
+            return get("/owner?state=" + state, userId);
+        } else {
+            return get("/owner", userId);
+        }
     }
 
 }

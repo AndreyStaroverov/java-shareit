@@ -11,9 +11,6 @@ import ru.practicum.shareit.item.dto.ItemDtoPatch;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
 import java.util.Collection;
 
 @RestController
@@ -29,29 +26,29 @@ public class ItemController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<ItemDtoById> getItems(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
-                                            @RequestParam(value = "from", required = false) @Min(1) Long from,
-                                            @RequestParam(value = "size", required = false) @Min(1) Long size) {
+    public Collection<ItemDtoById> getItems(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                            @RequestParam(value = "from", required = false) Long from,
+                                            @RequestParam(value = "size", required = false) Long size) {
         return itemService.getItems(userId, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItem(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
-                           @RequestBody @Valid ItemDto item) {
+    public ItemDto addItem(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                           @RequestBody ItemDto item) {
         return itemService.addNewItem(userId, item);
     }
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteItem(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+    public void deleteItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                            @PathVariable Long itemId) {
         itemService.deleteItem(userId, itemId);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @RequestBody ItemDtoPatch itemDtoPatch,
                               @PathVariable Long id) {
         return itemService.itemUpdate(itemDtoPatch, id, userId);
@@ -59,23 +56,22 @@ public class ItemController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDtoById getItemById(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
-                                   @PathVariable @Positive Long id) {
+    public ItemDtoById getItemById(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long id) {
         return itemService.getItemById(id, userId);
     }
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public Collection<ItemDto> getSearchItems(@RequestParam(name = "text", required = false) String text,
-                                              @RequestParam(value = "from", required = false) @Min(1) Long from,
-                                              @RequestParam(value = "size", required = false) @Min(1) Long size) {
+                                              @RequestParam(value = "from", required = false) Long from,
+                                              @RequestParam(value = "size", required = false) Long size) {
         return itemService.getSearchItems(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     @ResponseStatus(HttpStatus.OK)
-    public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
-                                 @RequestBody @Valid Comment comment,
+    public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                 @RequestBody Comment comment,
                                  @PathVariable Long itemId) {
         return itemService.addComment(userId, comment, itemId);
     }

@@ -8,9 +8,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoCreate;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
 import java.util.Collection;
 
 @RestController
@@ -26,14 +23,14 @@ public class BookingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingDtoCreate createBooking(@RequestHeader(value = "X-Sharer-User-Id") @Positive Long userId,
-                                          @RequestBody @Valid BookingDto booking) {
+    public BookingDtoCreate createBooking(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
+                                          @RequestBody BookingDto booking) {
         return bookingService.createBooking(userId, booking);
     }
 
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoCreate updateBooking(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+    public BookingDtoCreate updateBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
                                           @PathVariable(name = "bookingId") Long id,
                                           @RequestParam(name = "approved") Boolean approved) {
         return bookingService.updateBooking(userId, id, approved);
@@ -42,30 +39,26 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public BookingDtoCreate getBookingById(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
-                                           @PathVariable @Positive Long bookingId) {
+    public BookingDtoCreate getBookingById(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                           @PathVariable Long bookingId) {
         return bookingService.getBookingById(userId, bookingId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<BookingDtoCreate> getBookingsOwner(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+    public Collection<BookingDtoCreate> getBookingsOwner(@RequestHeader("X-Sharer-User-Id")  Long userId,
                                                          @RequestParam(defaultValue = "ALL") String state,
-                                                         @RequestParam(value = "from", required = false)
-                                                         @Min(1) Long from,
-                                                         @RequestParam(value = "size", required = false)
-                                                         @Min(1) Long size) {
+                                                         @RequestParam(value = "from", required = false) Long from,
+                                                         @RequestParam(value = "size", required = false) Long size) {
         return bookingService.getBookingsByState(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<BookingDtoCreate> getBookingsItemsOwner(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+    public Collection<BookingDtoCreate> getBookingsItemsOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                               @RequestParam(defaultValue = "ALL") String state,
-                                                              @RequestParam(value = "from", required = false)
-                                                              @Min(1) Long from,
-                                                              @RequestParam(value = "size", required = false)
-                                                              @Min(1) Long size) {
+                                                              @RequestParam(value = "from", required = false) Long from,
+                                                              @RequestParam(value = "size", required = false) Long size) {
         return bookingService.getBookingsItemsByOwner(userId, state, from, size);
     }
 

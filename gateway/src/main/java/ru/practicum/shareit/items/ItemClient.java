@@ -30,11 +30,15 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getItems(Long userId, Long from, Long size) {
-        Map<String, Object> parameters = Map.of(
-                "from", from,
-                "size", size
-        );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
+        if (from != null && size != null) {
+            Map<String, Object> parameters = Map.of(
+                    "from", from,
+                    "size", size
+            );
+            return get("?from={from}&size={size}", userId, parameters);
+        } else {
+            return get("", userId);
+        }
     }
 
     public ResponseEntity<Object> addNewItem(Long userId, ItemDto itemDto) {
@@ -54,12 +58,16 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getSearchItems(String text, Long from, Long size) {
-        Map<String, Object> parameters = Map.of(
-                "text", text,
-                "from", from,
-                "size", size
-        );
-        return get("/search?text={text}&from={from}&size={size}", parameters);
+        if (from != null && size != null) {
+            Map<String, Object> parameters = Map.of(
+                    "text", text,
+                    "from", from,
+                    "size", size
+            );
+            return get("/search?text={text}&from={from}&size={size}", parameters);
+        } else {
+            return get("/search?text=" + text);
+        }
     }
 
     public ResponseEntity<Object> addComment(Long userId, Comment comment, Long itemId) {
