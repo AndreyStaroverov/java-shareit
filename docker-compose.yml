@@ -3,7 +3,7 @@ services:
   gateway:
     build: shareit-gateway
     image: shareit-gateway-image
-    container_name:
+    container_name: gateway
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
@@ -17,7 +17,7 @@ services:
   server:
     build: shareit-server
     image: shareit-server-image
-    container_name: shareit-server-container
+    container_name: server
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
