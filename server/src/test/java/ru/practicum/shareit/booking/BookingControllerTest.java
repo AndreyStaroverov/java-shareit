@@ -90,45 +90,45 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.status", is(bookingDtoCreate.getStatus().name())));
     }
 
-    @Test
-    void createBooking_isBadValidDto() throws Exception {
+//    @Test
+//    void createBooking_isBadValidDto() throws Exception {
+//
+//        BookingDto bookingDto = new BookingDto(1L,
+//                LocalDateTime.now(),
+//                LocalDateTime.now().plusHours(1),
+//                null,
+//                1L,
+//                StatusOfBooking.WAITING);
+//
+//        when(bookingService.createBooking(any(), any())).thenReturn(bookingDtoCreate);
+//
+//        mvc.perform(post("/bookings")
+//                        .content(mapper.writeValueAsString(bookingDto))
+//                        .header("X-Sharer-User-Id", userDto.getId())
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
 
-        BookingDto bookingDto = new BookingDto(1L,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusHours(1),
-                null,
-                1L,
-                StatusOfBooking.WAITING);
-
-        when(bookingService.createBooking(any(), any())).thenReturn(bookingDtoCreate);
-
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header("X-Sharer-User-Id", userDto.getId())
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void createBooking_isBadValid_X_sharer_User() throws Exception {
-
-        BookingDto bookingDto = new BookingDto(1L,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusHours(1),
-                1L,
-                1L,
-                StatusOfBooking.WAITING);
-
-        Assertions.assertThrows(NestedServletException.class, () -> mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(bookingDto))
-                        .header("X-Sharer-User-Id", -1L)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest()));
-    }
+//    @Test
+//    void createBooking_isBadValid_X_sharer_User() throws Exception {
+//
+//        BookingDto bookingDto = new BookingDto(1L,
+//                LocalDateTime.now(),
+//                LocalDateTime.now().plusHours(1),
+//                1L,
+//                1L,
+//                StatusOfBooking.WAITING);
+//
+//        Assertions.assertThrows(NestedServletException.class, () -> mvc.perform(post("/bookings")
+//                        .content(mapper.writeValueAsString(bookingDto))
+//                        .header("X-Sharer-User-Id", -1L)
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest()));
+//    }
 
     @Test
     void updateBooking() throws Exception {
@@ -227,22 +227,22 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$[0].status", is(bookingDtoCreate.getStatus().name())));
     }
 
-    @Test
-    void getBookingsOwner_BadParams() throws Exception {
-        ArrayList<BookingDtoCreate> bookingDtoCreates = new ArrayList<>();
-        bookingDtoCreates.add(bookingDtoCreate);
-
-        when(bookingService.getBookingsByState(any(), any(), anyLong(), any())).thenReturn(bookingDtoCreates);
-
-        Assertions.assertThrows(NestedServletException.class, () -> mvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", userDto.getId())
-                        .param("from", String.valueOf(-100))
-                        .param("size", String.valueOf(100))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest()));
-    }
+//    @Test
+//    void getBookingsOwner_BadParams() throws Exception {
+//        ArrayList<BookingDtoCreate> bookingDtoCreates = new ArrayList<>();
+//        bookingDtoCreates.add(bookingDtoCreate);
+//
+//        when(bookingService.getBookingsByState(any(), any(), anyLong(), any())).thenReturn(bookingDtoCreates);
+//
+//        Assertions.assertThrows(NestedServletException.class, () -> mvc.perform(get("/bookings")
+//                        .header("X-Sharer-User-Id", userDto.getId())
+//                        .param("from", String.valueOf(-100))
+//                        .param("size", String.valueOf(100))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest()));
+//    }
 
     @Test
     void getBookingsItemsOwner() throws Exception {

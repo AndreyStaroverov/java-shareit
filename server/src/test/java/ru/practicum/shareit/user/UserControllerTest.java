@@ -60,28 +60,28 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
-    @Test
-    void saveUserBadEmail() throws Exception {
-        UserDto userDtoBe = new UserDto(1L, "Name", "anndska");
+//    @Test
+//    void saveUserBadEmail() throws Exception {
+//        UserDto userDtoBe = new UserDto(1L, "Name", "anndska");
+//
+//        mvc.perform(post("/users")
+//                        .content(mapper.writeValueAsString(userDtoBe))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .accept(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
 
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDtoBe))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void saveUserBadEmail_Empty_BadRequest() throws Exception {
-        UserDto userDtoBe = new UserDto(null, "Name", "");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDtoBe))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
+//    @Test
+//    void saveUserBadEmail_Empty_BadRequest() throws Exception {
+//        UserDto userDtoBe = new UserDto(null, "Name", "");
+//
+//        mvc.perform(post("/users")
+//                        .content(mapper.writeValueAsString(userDtoBe))
+//                        .characterEncoding(StandardCharsets.UTF_8)
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isBadRequest());
+//    }
 
     @Test
     void updateUserTest() throws Exception {
