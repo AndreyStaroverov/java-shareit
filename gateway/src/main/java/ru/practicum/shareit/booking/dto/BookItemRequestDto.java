@@ -4,8 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookItemRequestDto {
 	private long itemId;
-	@FutureOrPresent
+	@Positive
 	private LocalDateTime start;
-	@Future
+	@Positive
 	private LocalDateTime end;
 }
