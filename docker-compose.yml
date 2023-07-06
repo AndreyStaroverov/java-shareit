@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   gateway:
-    build: gateway
+    build: gateway/.
     image: shareit-gateway-image
     container_name: shareit-gateway
     ports:
@@ -15,7 +15,7 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
 
   server:
-    build: server
+    build: server/.
     image: shareit-server-image
     container_name: server
     ports:
