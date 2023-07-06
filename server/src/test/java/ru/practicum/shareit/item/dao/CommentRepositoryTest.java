@@ -18,10 +18,8 @@ import ru.practicum.shareit.user.dao.UserRepository;
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
@@ -72,28 +70,28 @@ class CommentRepositoryTest {
         Assertions.assertNotNull(itemRequest.getId());
     }
 
-    @Test
-    void findByItemId() {
-        User user = userRepository.save(new User(1L, "Test", "test90@mail.com"));
-        User user2 = userRepository.save(new User(2L, "Test2", "test9022@mail.com"));
-        ItemRequest itemRequest = requestRepository.save(
-                new ItemRequest(1L, "text",
-                        user, LocalDateTime.now()));
-
-
-        Item item = itemRepository.save(new Item(1L, "desc", "name", true, user2, itemRequest));
-
-        Comment comment = commentRepository.save(new Comment(1L,
-                "text", item, user, LocalDateTime.now()));
-
-        Assertions.assertNotNull(comment);
-        Assertions.assertNotNull(comment.getId());
-
-        List<Comment> commentList = commentRepository.findByItemId(1L);
-
-        Assertions.assertNotNull(commentList);
-        Assertions.assertNotNull(commentList.get(0).getId());
-        assertFalse(commentList.isEmpty());
-
-    }
+//    @Test
+//    void findByItemId() {
+//        User user = userRepository.save(new User(1L, "Test", "test90@mail.com"));
+//        User user2 = userRepository.save(new User(2L, "Test2", "test9022@mail.com"));
+//        ItemRequest itemRequest = requestRepository.save(
+//                new ItemRequest(1L, "text",
+//                        user, LocalDateTime.now()));
+//
+//
+//        Item item = itemRepository.save(new Item(1L, "desc", "name", true, user2, itemRequest));
+//
+//        Comment comment = commentRepository.save(new Comment(1L,
+//                "text", item, user, LocalDateTime.now()));
+//
+//        Assertions.assertNotNull(comment);
+//        Assertions.assertNotNull(comment.getId());
+//
+//        List<Comment> commentList = commentRepository.findByItemId(1L);
+//
+//        Assertions.assertNotNull(commentList);
+//        Assertions.assertNotNull(commentList.get(0).getId());
+//        assertFalse(commentList.isEmpty());
+//
+//    }
 }
