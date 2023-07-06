@@ -32,22 +32,22 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Object> updateBooking(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
-                                                @PathVariable(name = "bookingId") Long id,
+                                                @PathVariable(name = "bookingId") @Positive Long id,
                                                 @RequestParam(name = "approved") Boolean approved) {
         return bookingClient.updateBooking(userId, id, approved);
     }
 
     @GetMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                             @PathVariable Long bookingId) {
+    public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
+                                             @PathVariable @Positive Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getBookings(@RequestHeader("X-Sharer-User-Id") @Positive Long userId,
                                               @RequestParam(name = "state", defaultValue = "ALL") String state,
                                               @RequestParam(value = "from", required = false) @Min(0) Long from,
                                               @RequestParam(value = "size", required = false) @Min(1) Long size
