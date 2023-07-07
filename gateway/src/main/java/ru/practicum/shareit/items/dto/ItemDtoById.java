@@ -12,8 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Setter
-@Getter
 public class ItemDtoById {
 
     @Positive

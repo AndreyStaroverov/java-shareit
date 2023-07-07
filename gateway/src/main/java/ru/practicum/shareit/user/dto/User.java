@@ -7,11 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 @ToString
 public class User {
 
